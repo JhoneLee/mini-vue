@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>mini-vue</title>
+        <script type="text/javascript" src="./vue.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            <input id="input" type="text" v-mode="text"/>
+            你输入的是{{text}}
+        </div>
+    </body>
+    <script type="text/javascript">
+        let vm = new MVue({
+            data:{text:'init'},
+            el:"#app"
+        });
+    </script>
+</html>
