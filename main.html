@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>mini-vue2</title>
+        <script type="text/javascript" src="./Compile.js"></script>
+        <script type="text/javascript" src="./vue2.js"></script>
+        
+    </head>
+    <body>
+        <div id="app">
+            个人信息：
+            <div>
+                <p>name:{{name}}</p>
+                <p>age: {{age}}</p>
+            </div>
+               say:{{lang}}
+            <p v-text="addr"></p>
+            <p v-html="city"></p>
+            <input type="text" v-model="lang" />
+            <button @click="addAge">年龄+1</button>
+        </div>
+    </body>
+    <script type="text/javascript">
+        var options = {
+            data:{
+                name:'jack',
+                age:10,
+                lang:'hello world',
+                addr:'北京市延庆区',
+                city:'<div style="color:red">北京</div>'
+            },
+            methods:{
+                addAge(){
+                    this.age++;
+                }
+            },
+            created(){
+                setTimeout(()=>{
+                    this.lang = 'Hi!!';
+                },1500);
+            },
+            el:"#app"
+        }
+        let vm = new myVue(options);
+        // 监听数据例子
+        // 默认改变所有对array的监听
+
+        // const arrayProto = Array.prototype;
+        // const apCopy = Object.create(arrayProto);
+        // const func = apCopy.push;
+        // Object.defineProperty(arrayProto,'push',{
+        //     writable:true,
+        //     enumerable:false,
+        //     configurable:true,
+        //     value(...args){
+        //         if(args[0]===1){
+        //             console.log(args,this);
+        //         }
+        //         var result = func.apply(this,args);
+        //         return result;
+        //     }
+        // });
+
+        // [].push(1,2);
+
+        // vue 对该监听的数组进行监听
+        const arrayProto = Array.prototype;
+        const apCopy = Object.create(arrayProto);
+        const func = arrayProto.push;
+        Object.defineProperty(apCopy,'push',{
+            writable:true,
+            enumerable:false,
+            configurable:true,
+            value(...args){
+                console.log('监听了该数组',args,this);
+                var result = func.apply(this,args);
+                return result;
+            }
+        });
+        var arr = [];
+        arr.__proto__ = apCopy;
+        arr.push(1,2);
+    </script>
+</html>

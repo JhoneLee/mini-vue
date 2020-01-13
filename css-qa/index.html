@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>css-qa index</title>
+    <style>
+        .father{
+            width: 600px;
+            border:2px solid red;
+        }
+        /*.father:after{
+            content:'';
+            clear:both;
+            zoom:1;
+            display: block;
+            height: 0;
+        }*/
+        .son{
+            width: 100px;
+            height: 100px;
+            background-color: green;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+    <ul>
+        <li><a href="./tpl/background.html">背景测试</a></li>
+        <li><a href="./tpl/layout.html">布局测试</a></li>
+    </ul>
+    <div class="father">
+        <div class="son" style="background-color:blue;"></div>
+        <div class="son" style="float: none;"></div>
+    </div>
+    <div>
+        <div style="background:lightblue">1A set of screening conditions for initial experiments</div>
+        <p style="position:relative; top:-30px; background-color: yellow;">A set of screening conditions for initial experiments</p>
+        <p style="color:palevioletred">2A set of screening conditions for initial experiments</p>
+    </div>
+</body>
+</html>

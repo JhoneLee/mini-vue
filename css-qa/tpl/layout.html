@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>布局</title>
+    <style>
+        *{margin:0;padding:0;}
+        html{
+            height: 100%;
+        }
+        body{
+            height: 100%;
+        }
+        #case1 .main{
+            display: flex;
+            height: 100px;
+        }
+        #case1 .left{
+            background: red;
+            width: 100px;
+        }
+        #case1 .middle{
+            flex:1;
+            background: white;
+        }
+        #case1 .right{
+            background: blue;
+            width: 100px;
+        }
+    </style>
+    <style>
+        #case2 .main{
+            height: 100px;
+            position: relative;
+        }
+        #case2 .left{
+            background: red;
+            width: 100px;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top:0;
+        }
+        #case2 .middle{
+            background: white;
+            margin:0 100px;
+        }
+        #case2 .right{
+            background: blue;
+            width: 100px;
+            height: 100%;
+            right: 0;
+            top:0;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <!-- 两边固定，中间自适应 -->
+    <div id="case1">
+        <div class="main">
+            <div class="left">left</div>
+            <div class="middle">middle</div>
+            <div class="right">right</div>
+        </div>
+    </div>
+
+    <div id="case2" style="margin-top:100px;">
+        <div class="main">
+            <div class="left">left</div>
+            <div class="middle">middle</div>
+            <div class="right">right</div>
+        </div>
+    </div>
+</body>
+</html>
