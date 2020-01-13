@@ -2,7 +2,7 @@
 * @Author: liyunjiao2048@163.com
 * @Date:   2019-11-19 14:55:48
 * @Last Modified by:   liyunjiao2048@163.com
-* @Last Modified time: 2019-11-19 16:32:20
+* @Last Modified time: 2020-01-07 20:44:32
 */
 
 function MVue(opt){
@@ -11,10 +11,11 @@ function MVue(opt){
     this.$el = el;
     // 用观察者监听数据
     obverser(this.$data);
-
+    // 找到宿主dom
     let elem = document.querySelector(this.$el);
+    // 向宿主dom中注入被vue处理后的节点
     elem.appendChild(nodeToFragement(elem,this));
-}
+}、、
 
 /*
     vue进行编译时，将挂载目标的所有子节点劫持到DocumentFragment中，
@@ -30,6 +31,7 @@ function nodeToFragement(node,vm){
             let dom = nodeToFragement(child);
             child.appendChild(dom);
         }
+        // fragement在appendChild的时候会删除child的原始节点
         fragement.appendChild(child);
     }
     return fragement;
@@ -59,7 +61,7 @@ function compile(node,vm){
     } else if(node.nodeType==3){
         // 文本节点
         if(reg.test(node.nodeValue)){
-            // RegExp.$1 保存上一次匹配的第一个捕获组结果 $2-$9 以此类推
+            // RegExp.$1 保存上一次匹配的第一个捕获组结果 $2-$99 以此类推
             let name = RegExp.$1 && RegExp.$1.trim() ;
             // 备份模板字符串
             node.tplStr = node.nodeValue;
@@ -106,8 +108,8 @@ Watcher.prototype = {
             this.node.nodeValue = this.node.tplStr.replace(new RegExp('\\{\\{\\s*(' + name + ')\\s*\\}\\}'), this.value);
         }
         // this.node.nodeValue = ;
-    },
-    get(){
+        get(){},
+        // 此处触发观察者的getter，将订阅者存入管理观察者的队列
         this.value = this.vm.$data[this.name]
     }
 }
