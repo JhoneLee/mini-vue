@@ -15,7 +15,7 @@ function MVue(opt){
     let elem = document.querySelector(this.$el);
     // 向宿主dom中注入被vue处理后的节点
     elem.appendChild(nodeToFragement(elem,this));
-}、、
+}
 
 /*
     vue进行编译时，将挂载目标的所有子节点劫持到DocumentFragment中，
@@ -108,9 +108,12 @@ Watcher.prototype = {
             this.node.nodeValue = this.node.tplStr.replace(new RegExp('\\{\\{\\s*(' + name + ')\\s*\\}\\}'), this.value);
         }
         // this.node.nodeValue = ;
-        get(){},
+        
         // 此处触发观察者的getter，将订阅者存入管理观察者的队列
         this.value = this.vm.$data[this.name]
+    },
+    get(){
+        
     }
 }
 

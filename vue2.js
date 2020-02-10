@@ -1,4 +1,4 @@
-
+ 
 class myVue{
     constructor(options){
         // 将data methods等存入自己的属性
@@ -17,7 +17,7 @@ class myVue{
         // 接触数据
         if(typeof data === 'object'){
             for(let key in data){
-                this.defineReative(data,key);
+                this.defineReactive(data,key);
                 this.proxyData(key);
             }
         }
@@ -44,7 +44,7 @@ class myVue{
         });
     }
     // 实现数据劫持的方法
-    defineReative(obj,key){
+    defineReactive(obj,key){
         // 获取当前属性的值
         var value = obj[key];
         // 如果value是object，递归调用，实现深度数据劫持

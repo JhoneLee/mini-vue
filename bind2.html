@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>原始双向绑定</title>
+</head>
+<body>
+    <div id="app">
+        <div>{{name}}</div>
+        <input type="text" x-model="name"/>
+    </div>
+</body>
+<script type="text/javascript">
+    class Bind {
+        constructor(opt) {
+            this.$el = document.querySelector(opt.$el);
+            this.$data = opt.data;
+            this.$deps = {};
+            this.observe();
+            this.watch();
+            this.node2Fragment();
+            this.compile(this.$fragment);
+        }
+        observe(){
+            for(let item in this.$data){
+                this.$deps[item] = new Dep();
+            }
+        }
+        compile(root){
+            let nodes = Array.from(root.childNodes);
+            var reg = /\{\{(.*)\}\}/;
+            if(nodes.length){
+                for(let i=0;i<nodes.length;i++){
+                    let node = nodes[i];
+                    if(node.nodeType == 1){
+                        let attrs = node.attributes;
+                        Array.from(attrs).forEach(attr=>{
+                            if(attr.localName=='x-model'){
+                                this.orders['model'].call(this,node,attr.value);
+                            }
+                        });
+                    } else if(node.nodeType == 3 && reg.test(node.textContent)){
+                        if(reg.test(node.textContent)){
+                            let key = RegExp.$1;
+                            this.update('text',node,key);
+                        }
+                    }
+                    this.compile(node);
+                }
+            }
+            this.$el.appendChild(root);
+        }
+
+        node2Fragment(){
+            let childList = this.$el.childNodes;
+            this.$fragment = document.createDocumentFragment();
+            Array.from(childList).forEach(e=>{
+                this.$fragment.appendChild(e);
+            });
+        }
+
+        updates = {
+            textUpdate(node,val){
+                node.textContent = val;
+            },
+            modelUpdate(node,val){
+                node.value = val;
+            }
+        }
+
+        update(type,node,key){
+            let val = this.$data[key];
+            this.updates[`${type}Update`](node,val);
+            var fn = this.updates[`${type}Update`];
+            new Watcher(this,fn,node,key);
+        }
+
+        orders = {
+            model(node,key){
+                this.update('model',node,key);
+                node.addEventListener('input',e=>{
+                    this.$data[key] = e.target.value;
+                    console.log(this.$data);
+                })
+            }
+        }
+
+        watch(){
+            // 事件汇总
+            let digest = throttle(this.$digest,3000,{
+                leading:true,
+                context:this,
+                trailing:true
+            });
+            document.addEventListener('input',(e)=>{
+                let {target} = e;
+                let key = target.getAttribute('x-model');
+                digest(key);
+            })
+        }
+
+        $digest(key){
+            this.$deps[key].notify();
+        }
+
+    }
+
+    class Dep{
+        constructor(){
+            this.deps = [];
+        }
+        add(dep){
+            this.deps.push(dep);
+        }
+        notify(){
+            this.deps.forEach(dep=>dep.update());
+        }
+    }
+
+    class Watcher{
+        constructor(bm,fn,node,key){
+            this.fn = fn;
+            this.key = key;
+            this.node = node;
+            this.$bm = bm;
+            this.$bm.$deps[key].add(this);
+        }
+        update(){
+            this.fn(this.node,this.$bm.$data[this.key]);
+        }
+    }
+
+    new Bind({
+        data:{name:'jack'},
+        $el:'#app'
+    })
+
+
+    function throttle(fn,delay,opt){
+        let timer = null;
+        let prev = 0;
+        let begin = Date.now();
+        return function(){
+            if(opt.leading){
+                prev = delay;
+                opt.leading = false;
+            }
+            let now = Date.now();
+            let sub = now-begin+prev;
+            let _this = opt.context || this;
+            let args = Array.from(arguments);
+            clearTimeout(timer);
+            console.log(sub,delay)
+            if(sub>=delay){
+                prev = 0;
+                begin = Date.now();
+                return fn.apply(_this,args);
+            } else if(opt.trailing){
+                timer = setTimeout(()=>{
+                    prev = 0;
+                    begin = Date.now();
+                    console.log('执行')
+                    return fn.apply(_this,args);
+                },sub)
+            }
+        }
+    }
+</script>
+</html>
